@@ -1,35 +1,34 @@
-import {Controller, Get, HttpCode, Header, Redirect, Post, Delete, Param, Body} from "@nestjs/common";
+import {Controller, Get, HttpCode, Header, Redirect, Post, Delete, Param, Body, Put} from "@nestjs/common";
+import {ITask} from "@src/test/task.interface";
+import {TestService} from "@src/test/test.service";
 
 interface Task {
     id: number; task: string
 }
 
+class ITasks {
+}
+
 @Controller('task')
 export class TestController{
-    private tasks: Task[] = [
-        {id: 1, task: 'task 1'},
-        {id: 2, task: 'task 2'},
-    ];
-
+    constructor(private testService: TestService){}
     @Get()
     // @Redirect('https://google.com')
     // @HttpCode(206)
     // @Header('Test', 'Test value')
-    getTasks(): Task[]{
-        return this.tasks
+    getTasks(): ITasks[]{
+        return this.testService.getTasks()
     }
     @Get(':id')
-    getTaskById(@Param('id') id: number ): Task{
-        const task = this.tasks.find((t) => t.id === +id)
-        return task
+    getTaskById(@Param('id') id: number ): { task: string; id: number }{
+        return this.testService.getTaskById(id)
     }
     @Post()
-    createTask(@Body('task') task: Task) : Task {
-        this.tasks.push(task);
-        return task;
+    createTask(@Body('task') task: ITask) : ITask {
+        return this.testService.createTask(task)
     }
     @Delete(':id')
     deleteTask(@Param('id') id: string){
-        return `Delete action a #${id} task`;
+        return this.testService.deleteTask(id)
     }
 }
