@@ -28,4 +28,8 @@ export class TestController{
         this.tasks.push(task);
         return task;
     }
+    @Delete(':id')
+    deleteTask(@Param('id') id: string){
+        return `Delete action a #${id} task`;
+    }
 }
